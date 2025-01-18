@@ -54,6 +54,7 @@ User=root
 WantedBy=multi-user.target
 EOL
 
+sleep 5 
 # Применяем изменения
 sudo systemctl daemon-reload
 sudo systemctl restart gaianet-$NODE_NUMBER.service
