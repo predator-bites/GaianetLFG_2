@@ -12,7 +12,7 @@ CONFIG_URL="https://raw.gaianet.ai/qwen2-0.5b-instruct/config.json"
 LLAMAEDGE_PORT=$((8080 + (NODE_NUMBER - 1) * 5))
 SERVICE_FILE="/etc/systemd/system/gaianet-$NODE_NUMBER.service"
 CHAT_SCRIPT="/root/random_chat_with_faker_$NODE_NUMBER.py"
-INFO_FILE="/root/$NODE_DIR/gaianet_info.txt"
+INFO_FILE="$NODE_DIR/gaianet_info.txt"
 
 # Проверяем наличие директории
 if [ ! -d "$NODE_DIR" ]; then
@@ -30,8 +30,9 @@ sed -i "s/\"llamaedge_port\": \"8080\"/\"llamaedge_port\": \"$LLAMAEDGE_PORT\"/"
 gaianet start --base $NODE_DIR
 
 # Сохраняем информацию о ноде
-gaianet info > $INFO_FILE
-NODE_ID=$(grep 'Node ID:' $INFO_FILE | awk '{print $3}' | sed 's/[^a-zA-Z0-9]//g' | cut -c1-42)
+gaianet info > "$INFO_FILE"
+NODE_ID=$(grep 'Node ID:' "$INFO_FILE" | awk '{print $3}' | sed 's/[^a-zA-Z0-9]//g' | cut -c1-42)
+
 
 # Настраиваем службу systemd
 cat <<EOL | sudo tee $SERVICE_FILE
