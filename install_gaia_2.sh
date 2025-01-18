@@ -43,8 +43,8 @@ After=network.target
 [Service]
 Type=forking
 RemainAfterExit=true
-ExecStart=/root/$NODE_DIR/bin/gaianet start
-ExecStop=/root/$NODE_DIR/bin/gaianet stop
+ExecStart=$NODE_DIR/bin/gaianet start
+ExecStop=$NODE_DIR/bin/gaianet stop
 ExecStopPost=/bin/sleep 20
 Restart=always
 RestartSec=5
