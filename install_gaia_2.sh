@@ -140,5 +140,5 @@ cat << EOF
 
 Чтобы выйти из сессии, не останавливая скрипт:
   Нажмите Ctrl+A, затем D.
-
+gaianet info --base $NODE_DIR
 EOF
