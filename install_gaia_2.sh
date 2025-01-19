@@ -53,9 +53,7 @@ sudo systemctl restart gaianet-$NODE_NUMBER.service
 sudo systemctl enable gaianet-$NODE_NUMBER.service
 
 # Запускаем ноду
-gaianet stop --base $NODE_DIR
-sleep 3 
-gaianet start --base $NODE_DIR
+
 
 # Сохраняем информацию о ноде
 gaianet info > "$INFO_FILE"
