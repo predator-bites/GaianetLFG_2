@@ -26,14 +26,6 @@ gaianet init --config "$CONFIG_URL" --base $NODE_DIR
 # Настраиваем порт в конфигурации
 sed -i "s/\"llamaedge_port\": \"8080\"/\"llamaedge_port\": \"$LLAMAEDGE_PORT\"/" "$NODE_DIR/config.json"
 
-# Запускаем ноду
-gaianet start --base $NODE_DIR
-
-# Сохраняем информацию о ноде
-gaianet info > "$INFO_FILE"
-NODE_ID=$(grep 'Node ID:' "$INFO_FILE" | awk '{print $3}' | sed 's/[^a-zA-Z0-9]//g' | cut -c1-42)
-
-
 # Настраиваем службу systemd
 cat <<EOL | sudo tee $SERVICE_FILE
 [Unit]
@@ -43,8 +35,8 @@ After=network.target
 [Service]
 Type=forking
 RemainAfterExit=true
-ExecStart=$NODE_DIR/bin/gaianet start
-ExecStop=$NODE_DIR/bin/gaianet stop
+ExecStart=$NODE_DIR/bin/gaianet start --base $NODE_DIR
+ExecStop=$NODE_DIR/bin/gaianet stop --base $NODE_DIR
 ExecStopPost=/bin/sleep 20
 Restart=always
 RestartSec=5
@@ -59,6 +51,13 @@ sleep 5
 sudo systemctl daemon-reload
 sudo systemctl restart gaianet-$NODE_NUMBER.service
 sudo systemctl enable gaianet-$NODE_NUMBER.service
+
+# Запускаем ноду
+gaianet start --base $NODE_DIR
+
+# Сохраняем информацию о ноде
+gaianet info > "$INFO_FILE"
+NODE_ID=$(grep 'Node ID:' "$INFO_FILE" | awk '{print $3}' | sed 's/[^a-zA-Z0-9]//g' | cut -c1-42)
 
 # Устанавливаем дополнительные инструменты
 sudo apt install -y python3-pip nano screen
