@@ -3,7 +3,20 @@ NEON_BLUE='\033[38;5;45m'
 NEON_RED= '\033[38;5;196m'
 RESET='\033[0m'
 
-# Вторая часть установки Gaianet Node
+# Логотип
+logo() {
+    echo -e "
+${NEON_RED}  ____   ${NEON_BLUE}____  
+${NEON_RED} |  _ \\  ${NEON_BLUE}|  _ \\ 
+${NEON_RED} | | | | ${NEON_BLUE}| |_) |
+${NEON_RED} | |_| | ${NEON_BLUE}|  __/ 
+${NEON_RED} |____/  ${NEON_BLUE}|_|    
+${NEON_RESET}
+"
+}
+
+# Вызов логотипа
+
 set -e
 
 # Получаем номер ноды от пользователя
@@ -133,9 +146,10 @@ EOL
 # Запуск Python-скрипта в screen
 screen -dmS "$SESSION_NAME" bash -c "python3 $CHAT_SCRIPT"
 
-# Инструкция для пользователя
-cat << EOF
 
+# Инструкция для пользователя с перекрашиванием в неоновый красный
+echo -e "${NEON_RED}"
+cat << EOF
 Установка завершена!
 - Node ID: $NODE_ID
 - Конфигурация сохранена в: $NODE_DIR/config.json
@@ -147,3 +161,8 @@ cat << EOF
 Чтобы выйти из сессии, не останавливая скрипт:
   Нажмите Ctrl+A, затем D.
 EOF
+echo -e "${RESET}"
+
+# Логотип и ссылка
+logo
+echo -e "${NEON_BLUE}https://t.me/DropPredator${RESET}"
