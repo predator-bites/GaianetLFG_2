@@ -39,6 +39,7 @@ else
     SESSION_NAME="faker_session_$NODE_NUMBER"
 fi
 
+mkdir $NODE_DIR
 # Проверяем наличие директории
 if [ ! -d "$NODE_DIR" ]; then
   echo "Директория $NODE_DIR не найдена. Убедитесь, что вы выполнили первый скрипт."
