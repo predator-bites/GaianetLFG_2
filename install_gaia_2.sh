@@ -1,18 +1,26 @@
 #!/bin/bash
+NEON_BLUE='\033[38;5;45m'
+NEON_RED= '\033[38;5;196m'
+RESET='\033[0m'
 
 # Вторая часть установки Gaianet Node
 set -e
 
 # Получаем номер ноды от пользователя
-read -p "Введите номер ноды (например, 2): " NODE_NUMBER
+read -p "Введите номер ноды (например, 1): " NODE_NUMBER
 
-# Переменные
-NODE_DIR="/root/gaianet-$NODE_NUMBER"
-CONFIG_URL="https://raw.gaianet.ai/qwen2-0.5b-instruct/config.json"
-LLAMAEDGE_PORT=$((8080 + (NODE_NUMBER - 1) * 5))
-SERVICE_FILE="/etc/systemd/system/gaianet-$NODE_NUMBER.service"
-CHAT_SCRIPT="/root/random_chat_with_faker_$NODE_NUMBER.py"
-INFO_FILE="$NODE_DIR/gaianet_info.txt"
+# Для первой ноды устанавливаем параметры
+if [ "$NODE_NUMBER" -eq 1 ]; then
+    NODE_DIR="/root/gaianet"
+    LLAMAEDGE_PORT=8080
+    SERVICE_FILE="/etc/systemd/system/gaianet.service"
+    SESSION_NAME="faker_session"
+else
+    NODE_DIR="/root/gaianet-$NODE_NUMBER"
+    LLAMAEDGE_PORT=$((8080 + (NODE_NUMBER - 1) * 5))
+    SERVICE_FILE="/etc/systemd/system/gaianet-$NODE_NUMBER.service"
+    SESSION_NAME="faker_session_$NODE_NUMBER"
+fi
 
 # Проверяем наличие директории
 if [ ! -d "$NODE_DIR" ]; then
@@ -21,7 +29,7 @@ if [ ! -d "$NODE_DIR" ]; then
 fi
 
 # Инициализируем ноду
-gaianet init --config "$CONFIG_URL" --base $NODE_DIR
+gaianet init --config "https://raw.gaianet.ai/qwen2-0.5b-instruct/config.json" --base $NODE_DIR
 
 # Настраиваем порт в конфигурации
 sed -i "s/\"llamaedge_port\": \"8080\"/\"llamaedge_port\": \"$LLAMAEDGE_PORT\"/" "$NODE_DIR/config.json"
@@ -47,24 +55,22 @@ WantedBy=multi-user.target
 EOL
 
 sleep 5 
+
 # Применяем изменения
 sudo systemctl daemon-reload
 sudo systemctl restart gaianet-$NODE_NUMBER.service
 sudo systemctl enable gaianet-$NODE_NUMBER.service
 
-# Запускаем ноду
-
-
 # Сохраняем информацию о ноде
-gaianet info > "$INFO_FILE"
-NODE_ID=$(grep 'Node ID:' "$INFO_FILE" | awk '{print $3}' | sed 's/[^a-zA-Z0-9]//g' | cut -c1-42)
+gaianet info > "$NODE_DIR/gaianet_info.txt"
+NODE_ID=$(grep 'Node ID:' "$NODE_DIR/gaianet_info.txt" | awk '{print $3}' | sed 's/[^a-zA-Z0-9]//g' | cut -c1-42)
 
 # Устанавливаем дополнительные инструменты
 sudo apt install -y python3-pip nano screen
 pip install requests faker
 
 # Создаем Python-скрипт общения с нодой
-cat <<EOL > $CHAT_SCRIPT
+cat <<EOL > "/root/random_chat_with_faker_$NODE_NUMBER.py"
 import requests
 import random
 import logging
@@ -125,7 +131,7 @@ while True:
 EOL
 
 # Запуск Python-скрипта в screen
-screen -dmS faker_session_$NODE_NUMBER bash -c "python3 $CHAT_SCRIPT"
+screen -dmS "$SESSION_NAME" bash -c "python3 $CHAT_SCRIPT"
 
 # Инструкция для пользователя
 cat << EOF
@@ -136,9 +142,8 @@ cat << EOF
 - Лог общения: chat_log_$NODE_NUMBER.txt
 
 Для подключения к screen-сессии:
-  screen -r faker_session_$NODE_NUMBER
+  screen -r $SESSION_NAME
 
 Чтобы выйти из сессии, не останавливая скрипт:
   Нажмите Ctrl+A, затем D.
-gaianet info --base $NODE_DIR
 EOF
