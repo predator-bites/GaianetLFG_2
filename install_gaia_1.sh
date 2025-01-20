@@ -27,7 +27,10 @@ echo -e "${NEON_RED}Welcome to DP Script!${RESET}"
 set -e
 
 # Получаем номер ноды от пользователя
-read -p "${NEON_BLUE}Введите номер ноды (например, 2): ${RESET}" NODE_NUMBER
+echo -e "${NEON_BLUE}Введите номер ноды (например, 2): ${RESET}"
+
+# Чтение ввода
+read NODE_NUMBER
 
 # Создаем директорию для ноды
 NODE_DIR="/root/gaianet-$NODE_NUMBER"
