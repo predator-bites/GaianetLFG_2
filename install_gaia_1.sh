@@ -34,10 +34,10 @@ read NODE_NUMBER
 
 if [ "$NODE_NUMBER" -eq 1 ]; then
     NODE_DIR="/root/gaianet"
-# Создаем директорию для ноды
 else
     NODE_DIR="/root/gaianet-$NODE_NUMBER"
 fi
+
 mkdir  $NODE_DIR
 
 # Устанавливаем обновления системы
