@@ -46,4 +46,4 @@ mkdir $NODE_DIR  # Используем -p для безопасного соз�
 sudo apt update -y && sudo apt-get update -y
 
 # Устанавливаем Gaianet
-curl -sSfL 'https://github.com/GaiaNet-AI/gaianet-node/releases/latest/download/install.sh' | bash -s -- --base "$NODE_DIR"
+curl -sSfL 'https://github.com/GaiaNet-AI/gaianet-node/releases/latest/download/install.sh' | bash -s -- --base $NODE_DIR
