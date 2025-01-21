@@ -32,11 +32,13 @@ if [ "$NODE_NUMBER" -eq 1 ]; then
     LLAMAEDGE_PORT=8080
     SERVICE_FILE="/etc/systemd/system/gaianet.service"
     SESSION_NAME="faker_session"
+    NODE_NAME="gaianet"
 else
     NODE_DIR="/root/gaianet-$NODE_NUMBER"
     LLAMAEDGE_PORT=$((8080 + (NODE_NUMBER - 1) * 5))
     SERVICE_FILE="/etc/systemd/system/gaianet-$NODE_NUMBER.service"
     SESSION_NAME="faker_session_$NODE_NUMBER"
+    NODE_NAME="gaianet-$NODE_NUMBER"
 fi
 
 
@@ -76,8 +78,8 @@ sleep 5
 
 # Применяем изменения
 sudo systemctl daemon-reload
-sudo systemctl restart gaianet-$NODE_NUMBER.service
-sudo systemctl enable gaianet-$NODE_NUMBER.service
+sudo systemctl restart $NODE_NAME.service
+sudo systemctl enable $NODE_NAME.service
 
 # Сохраняем информацию о ноде
 gaianet info > "$NODE_DIR/gaianet_info.txt"
