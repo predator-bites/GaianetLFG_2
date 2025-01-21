@@ -151,7 +151,7 @@ while True:
 EOL
 
 # Запуск Python-скрипта в screen
-screen -dmS $SESSION_NAME bash -c "python3 $CHAT_SCRIPT"
+screen -dmS $SESSION_NAME bash -c "python3 random_chat_with_faker_$NODE_NUMBER.py"
 
 
 # Инструкция для пользователя с перекрашиванием в неоновый красный
