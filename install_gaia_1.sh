@@ -35,8 +35,10 @@ read NODE_NUMBER
 # Условие для создания директории для первой ноды
 if [ "$NODE_NUMBER" -eq 1 ]; then
     NODE_DIR="/root/gaianet"
+    NODE_NAME="gaianet"
 else
     NODE_DIR="/root/gaianet-$NODE_NUMBER"
+    NODE_NAME="gaianet-$NODE_NUMBER"
 fi
 
 # Создаем директорию для ноды
