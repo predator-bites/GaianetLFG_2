@@ -27,7 +27,7 @@ echo -e "${NEON_RED}Welcome to DP Script!${RESET}"
 set -e
 
 # Получаем номер ноды от пользователя
-echo -e "                                                        "
+echo ""
 echo -e "${NEON_BLUE}Введите номер ноды (например, 2): ${RESET}"
 
 # Чтение ввода
