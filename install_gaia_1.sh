@@ -32,6 +32,11 @@ echo -e "${NEON_BLUE}Введите номер ноды (например, 2): $
 # Чтение ввода
 read NODE_NUMBER
 
+if [ "$NODE_NUMBER" -eq 1 ]; then
+    NODE_DIR="/root/gaianet"
+    LLAMAEDGE_PORT=8080
+    SERVICE_FILE="/etc/systemd/system/gaianet.service"
+    SESSION_NAME="faker_session"
 # Создаем директорию для ноды
 NODE_DIR="/root/gaianet-$NODE_NUMBER"
 mkdir -p $NODE_DIR
