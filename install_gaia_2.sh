@@ -155,7 +155,7 @@ screen -dmS $SESSION_NAME bash -c "python3 random_chat_with_faker_$NODE_NUMBER.p
 
 
 # Инструкция для пользователя с перекрашиванием в неоновый красный
-echo -e "${NEON_RED}"
+echo -e "${NEON_BLUE}"
 cat << EOF
 Установка завершена!
 - Node ID: $NODE_ID
@@ -163,7 +163,8 @@ cat << EOF
 - Лог общения: chat_log_$NODE_NUMBER.txt
 
 Для подключения к screen-сессии:
-  ${RESET}screen -r $SESSION_NAME ${NEON_RED}
+
+  screen -r $SESSION_NAME 
 
 Чтобы выйти из сессии, не останавливая скрипт:
   Нажмите Ctrl+A, затем D.
