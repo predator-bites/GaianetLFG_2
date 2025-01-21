@@ -163,7 +163,7 @@ cat << EOF
 - Лог общения: chat_log_$NODE_NUMBER.txt
 
 Для подключения к screen-сессии:
-  screen -r $SESSION_NAME
+  ${RESET}screen -r $SESSION_NAME ${NEON_RED}
 
 Чтобы выйти из сессии, не останавливая скрипт:
   Нажмите Ctrl+A, затем D.
