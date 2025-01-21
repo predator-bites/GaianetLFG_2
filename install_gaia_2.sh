@@ -1,7 +1,7 @@
 #!/bin/bash
 
 NEON_BLUE='\033[38;5;45m'
-NEON_RED= '\033[38;5;196m'
+NEON_RED='\033[38;5;196m'
 RESET='\033[0m'
 
 # Логотип
