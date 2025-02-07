@@ -87,7 +87,7 @@ NODE_ID=$(grep 'Node ID:' "$NODE_DIR/gaianet_info.txt" | awk '{print $3}' | sed 
 
 # Устанавливаем дополнительные инструменты
 sudo apt install -y python3-pip nano screen
-pip install requests faker
+pip install requests faker --break-system-packages
 
 # Создаем Python-скрипт общения с нодой
 cat <<EOL > "/root/random_chat_with_faker_$NODE_NUMBER.py"
