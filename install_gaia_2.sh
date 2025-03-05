@@ -4,18 +4,6 @@ NEON_BLUE='\033[38;5;45m'
 NEON_RED='\033[38;5;196m'
 RESET='\033[0m'
 
-# Логотип
-logo() {
-    echo -e "
-${NEON_RED}  ____   ${NEON_BLUE}____  
-${NEON_RED} |  _ \\  ${NEON_BLUE}|  _ \\ 
-${NEON_RED} | | | | ${NEON_BLUE}| |_) |
-${NEON_RED} | |_| | ${NEON_BLUE}|  __/ 
-${NEON_RED} |____/  ${NEON_BLUE}|_|    
-${NEON_RESET}
-"
-}
-
 # Вызов логотипа
 
 set -e
@@ -87,72 +75,6 @@ NODE_ID=$(grep 'Node ID:' "$NODE_DIR/gaianet_info.txt" | awk '{print $3}' | sed 
 
 # Устанавливаем дополнительные инструменты
 sudo apt install -y python3-pip nano screen
-pip install requests faker --break-system-packages
-
-# Создаем Python-скрипт общения с нодой
-cat <<EOL > "/root/random_chat_with_faker_$NODE_NUMBER.py"
-import requests
-import random
-import logging
-import time
-from faker import Faker
-from datetime import datetime
-
-node_url = "https://$NODE_ID.gaia.domains/v1/chat/completions"
-
-faker = Faker()
-
-headers = {
-    "accept": "application/json",
-    "Content-Type": "application/json"
-}
-
-logging.basicConfig(filename='chat_log_$NODE_NUMBER.txt', level=logging.INFO, format='%(asctime)s - %(message)s')
-
-def log_message(node, message):
-    logging.info(f"{node}: {message}")
-
-def send_message(node_url, message):
-    try:
-        response = requests.post(node_url, json=message, headers=headers)
-        response.raise_for_status()
-        return response.json()
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to get response from API: {e}")
-        return None
-
-def extract_reply(response):
-    if response and 'choices' in response:
-        return response['choices'][0]['message']['content']
-    return ""
-
-while True:
-    random_question = faker.sentence(nb_words=10)
-    message = {
-        "messages": [
-            {"role": "system", "content": "You are a helpful assistant."},
-            {"role": "user", "content": random_question}
-        ]
-    }
-
-    question_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    response = send_message(node_url, message)
-    reply = extract_reply(response)
-
-    reply_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-
-    log_message("Node replied", f"Q ({question_time}): {random_question} A ({reply_time}): {reply}")
-
-    print(f"Q ({question_time}): {random_question}\nA ({reply_time}): {reply}")
-
-    delay = random.randint(1, 3)
-    time.sleep(delay)
-EOL
-
-# Запуск Python-скрипта в screen
-screen -dmS $SESSION_NAME bash -c "python3 random_chat_with_faker_$NODE_NUMBER.py"
-
 
 # Инструкция для пользователя с перекрашиванием в неоновый красный
 echo -e "${NEON_BLUE}"
@@ -160,17 +82,7 @@ cat << EOF
 Установка завершена!
 - Node ID: $NODE_ID
 - Конфигурация сохранена в: $NODE_DIR/config.json
-- Лог общения: chat_log_$NODE_NUMBER.txt
-
-Для подключения к screen-сессии:
-
-  screen -r $SESSION_NAME 
-
-Чтобы выйти из сессии, не останавливая скрипт:
-  Нажмите Ctrl+A, затем D.
 EOF
 echo -e "${RESET}"
 
-# Логотип и ссылка
-logo
-echo -e "${NEON_BLUE}https://t.me/DropPredator${RESET}"
+
